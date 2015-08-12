@@ -1739,7 +1739,7 @@ powm(A::LowerTriangular, p::Real) = powm(A.', p::Real).'
 # Based on the code available at http://eprints.ma.man.ac.uk/1851/02/logm.zip,
 # Copyright (c) 2011, Awad H. Al-Mohy and Nicholas J. Higham
 # Julia version relicensed with permission from original authors
-function logm{T<:Union{Float32,Float64,Complex{Float32},Complex{Float64}}}(A0::UpperTriangular{T})
+function logm{T<:Union{Float64,Complex{Float64}}}(A0::UpperTriangular{T})
     theta = [1.586970738772063e-005,
          2.313807884242979e-003,
          1.938179313533253e-002,
@@ -1785,7 +1785,7 @@ function logm{T<:Union{Float32,Float64,Complex{Float32},Complex{Float64}}}(A0::U
     scale!(2^s,Y.data)
 
     # Compute accurate diagonal and superdiagonal of log(A)
-    for k = 1:n-1
+    @inbounds for k = 1:n-1
         Ak = complex(A0[k,k])
         Akp1 = complex(A0[k+1,k+1])
         logAk = log(Ak)
@@ -1816,7 +1816,7 @@ logm(A::LowerTriangular) = logm(A.').'
 #      Numer. Algorithms, 59, (2012), 393–402.
 function sqrt_diag!(A0::UpperTriangular, A::UpperTriangular, s)
     n = checksquare(A0)
-    for i = 1:n
+    @inbounds for i = 1:n
         a = complex(A0[i,i])
         if s == 0
             A[i,i] = a - 1
@@ -1873,7 +1873,6 @@ function invsquaring(A0::UpperTriangular, theta)
     d2 = sqrt(norm(AmI^2, 1))
     d3 = cbrt(norm(AmI^3, 1))
     alpha2 = max(d2, d3)
-    foundm = false
     if alpha2 <= theta[2]
         m = alpha2<=theta[1]?1:2
         foundm = true
@@ -1890,6 +1889,9 @@ function invsquaring(A0::UpperTriangular, theta)
             for j = 3:tmax
                 if alpha3 <= theta[j]
                     break
+                elseif alpha3 / 2 <= theta[5] && p < 2
+                    more = true
+                    p = p + 1
                 end
             end
             if j <= 6
@@ -1913,20 +1915,17 @@ function invsquaring(A0::UpperTriangular, theta)
                         m = j
                         break
                     end
+                    break
                 end
-                foundm = true
+            end
+            if s == maxsqrt
+                m = tmax
                 break
             end
+            A = sqrtm(A)
+            AmI = A - I
+            s = s + 1
         end
-
-        if s == maxsqrt
-            m = tmax
-            foundm = true
-            break
-        end
-        A = sqrtm(A)
-        AmI = A - I
-        s = s + 1
     end
 
     # Compute accurate superdiagonal of T
