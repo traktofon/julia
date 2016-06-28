@@ -79,6 +79,7 @@ srand(100)
                 x1 = convert(Vector{elty}, randn(n))
                 x2 = convert(Vector{elty}, randn(n))
                 α  = rand(elty)
+
                 @test BLAS.axpy!(α,copy(x1),copy(x2)) ≈ x2 + α*x1
                 @test_throws DimensionMismatch BLAS.axpy!(α, copy(x1), rand(elty, n + 1))
                 @test_throws DimensionMismatch BLAS.axpy!(α, copy(x1), 1:div(n,2), copy(x2), 1:n)
@@ -157,6 +158,7 @@ srand(100)
         A = triu(rand(elty,n,n))
         x = rand(elty,n)
         @test BLAS.trmv('U','N','N',A,x) ≈ A*x
+
         @testset "symmetric/Hermitian multiplication" begin
             x = rand(elty,n)
             A = rand(elty,n,n)

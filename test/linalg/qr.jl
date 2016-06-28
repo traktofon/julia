@@ -52,6 +52,7 @@ debug && println("QR decomposition (without pivoting)")
                 @test full(q, thin=false)'q ≈ eye(n)
                 @test eye(n)'q' ≈ full(q, thin=false)'
                 @test q*r ≈ a
+
                 @test a*(qra\b) ≈ b atol=3000ε
                 @test full(qra) ≈ a
                 @test A_mul_Bc(eye(eltyb,size(q.factors,2)),q)*full(q,thin=false) ≈ eye(n) atol=5000ε

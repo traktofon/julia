@@ -98,7 +98,6 @@ bimg  = randn(n,2)/2
             pinva15 = pinv(a[:,1:n1])
             @test a[:,1:n1]*pinva15*a[:,1:n1] ≈ a[:,1:n1]
             @test pinva15*a[:,1:n1]*pinva15 ≈ pinva15
-
             @test size(pinv(ones(eltya,0,0))) == (0,0)
         end
 
@@ -371,7 +370,6 @@ end
     A2 = view(A, 1:2, 1:2)
     A2sq = sqrtm(A2)
     @test A2sq*A2sq ≈ A2
-
     N = 3
     @test log(det(eye(N))) ≈ logdet(eye(N))
 end

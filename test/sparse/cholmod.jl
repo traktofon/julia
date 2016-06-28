@@ -701,4 +701,3 @@ end
     @test_throws ArgumentError CHOLMOD.Sparse(size(A)..., A.colptr - 1, A.rowval - 1, A.nzval)
     @test_throws ArgumentError CHOLMOD.Sparse(A)
 end
-

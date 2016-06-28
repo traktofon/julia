@@ -54,6 +54,7 @@ aimg  = randn(n,n)/2
             @test_throws DomainError eigmin(a - a')
             @test_throws DomainError eigmax(a - a')
         end
+
         @testset "symmetric generalized eigenproblem" begin
             if atype == "Array"
                 asym_sg = asym[1:n1, 1:n1]

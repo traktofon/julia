@@ -65,6 +65,7 @@ aimg  = randn(n,n)/2
             a1_sf = view(a, 1:n1, 1:n1)
             a2_sf = view(a, n1+1:n2, n1+1:n2)
         end
+
         @testset "Generalized Schur" begin
             f = schurfact(a1_sf, a2_sf)
             @test f[:Q]*f[:S]*f[:Z]' ≈ a1_sf
