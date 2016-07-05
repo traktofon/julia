@@ -425,11 +425,7 @@ sqrt(x::Float32) = sqrt_llvm(x)
 """
     sqrt(x)
 
-<<<<<<< HEAD
 Return ``\\sqrt{x}``. Throws [`DomainError`](@ref) for negative `Real` arguments. Use complex
-=======
-Return ``\\sqrt{x}``. Throws `DomainError` for negative `Real` arguments. Use complex
->>>>>>> Moved so many docs out of HelpDB. More examples.
 negative arguments instead.  The prefix operator `√` is equivalent to `sqrt`.
 """
 sqrt(x::Real) = sqrt(float(x))
@@ -503,28 +499,16 @@ max{T<:AbstractFloat}(x::T, y::T) = ifelse((y > x) | (signbit(y) < signbit(x)),
 
 
 min{T<:AbstractFloat}(x::T, y::T) = ifelse((y < x) | (signbit(y) > signbit(x)),
-<<<<<<< HEAD
                                     ifelse(isnan(x), x, y), ifelse(isnan(y), y, x))
 
 minmax{T<:AbstractFloat}(x::T, y::T) =
     ifelse(isnan(x) | isnan(y), ifelse(isnan(x), (x,x), (y,y)),
            ifelse((y > x) | (signbit(x) > signbit(y)), (x,y), (y,x)))
-=======
-                                    ifelse(isnan(y), x, y), ifelse(isnan(x), y, x))
-@vectorize_2arg Real min
-
-minmax{T<:AbstractFloat}(x::T, y::T) = ifelse(isnan(x-y), ifelse(isnan(x), (y, y), (x, x)),
-                                       ifelse((y < x) | (signbit(y) > signbit(x)), (y, x),
-                                       ifelse((y > x) | (signbit(y) < signbit(x)), (x, y),
-                                       ifelse(x == x, (x, x), (y, y)))))
->>>>>>> Moved so many docs out of HelpDB. More examples.
-
 
 """
     ldexp(x, n)
 
 Compute ``x \\times 2^n``.
-<<<<<<< HEAD
 
 # Example
 ```jldoctest
@@ -572,32 +556,8 @@ function ldexp{T<:IEEEFloat}(x::T, e::Integer)
         z = T(2.0)^-significand_bits(T)
         xu = (xu & ~exponent_mask(T)) | (rem(k, fpinttype(T)) << significand_bits(T))
         return z*reinterpret(T, xu)
-=======
-"""
-ldexp(x::Float64,e::Integer) = ccall((:scalbn,libm),  Float64, (Float64,Int32), x, Int32(e))
-ldexp(x::Float32,e::Integer) = ccall((:scalbnf,libm), Float32, (Float32,Int32), x, Int32(e))
-# TODO: vectorize ldexp
-
-"""
-    exponent(x) -> Int
-
-Get the exponent of a normalized floating-point number.
-"""
-function exponent{T<:AbstractFloat}(x::T)
-    xu = reinterpret(Unsigned,x)
-    xe = xu & exponent_mask(T)
-    k = Int(xe >> significand_bits(T))
-    if xe == 0 # x is subnormal
-        x == 0 && throw(DomainError())
-        xu &= significand_mask(T)
-        m = leading_zeros(xu)-exponent_bits(T)
-        k = 1-m
-    elseif xe == exponent_mask(T) # NaN or Inf
-        throw(DomainError())
->>>>>>> Moved so many docs out of HelpDB. More examples.
     end
 end
-<<<<<<< HEAD
 ldexp(x::Float16, q::Integer) = Float16(ldexp(Float32(x), q))
 
 """
@@ -613,41 +573,9 @@ function exponent{T<:IEEEFloat}(x::T)
         xs == 0 && throw(DomainError())
         m = leading_zeros(xs) - exponent_bits(T)
         k = 1 - m
-=======
-@vectorize_1arg Real exponent
-
-"""
-    significand(x)
-
-Extract the `significand(s)` (a.k.a. mantissa), in binary representation, of a
-floating-point number or array. If `x` is a non-zero finite number, then the result will be
-a number of the same type on the interval ``[1,2)``. Otherwise `x` is returned.
-
-```jldoctest
-julia> significand(15.2)/15.2
-0.125
-
-julia> significand(15.2)*8
-15.2
-```
-"""
-function significand{T<:AbstractFloat}(x::T)
-    xu = reinterpret(Unsigned,x)
-    xe = xu & exponent_mask(T)
-    if xe == 0 # x is subnormal
-        x == 0 && return x
-        xs = xu & sign_mask(T)
-        xu $= xs
-        m = leading_zeros(xu)-exponent_bits(T)
-        xu <<= m
-        xu $= xs
-    elseif xe == exponent_mask(T) # NaN or Inf
-        return x
->>>>>>> Moved so many docs out of HelpDB. More examples.
     end
     return k - exponent_bias(T)
 end
-<<<<<<< HEAD
 
 """
     significand(x)
@@ -674,30 +602,6 @@ function significand{T<:IEEEFloat}(x::T)
         m = unsigned(leading_zeros(xs) - exponent_bits(T))
         xs <<= m
         xu = xs | (xu & sign_mask(T))
-=======
-@vectorize_1arg Real significand
-
-"""
-    frexp(val)
-
-Return `(x,exp)` such that `x` has a magnitude in the interval ``[1/2, 1)`` or 0,
-and `val` is equal to ``x \\times 2^{exp}``.
-"""
-function frexp{T<:AbstractFloat}(x::T)
-    xu = reinterpret(Unsigned,x)
-    xe = xu & exponent_mask(T)
-    k = Int(xe >> significand_bits(T))
-    if xe == 0 # x is subnormal
-        x == 0 && return x, 0
-        xs = xu & sign_mask(T)
-        xu $= xs
-        m = leading_zeros(xu)-exponent_bits(T)
-        xu <<= m
-        xu $= xs
-        k = 1-m
-    elseif xe == exponent_mask(T) # NaN or Inf
-        return x,0
->>>>>>> Moved so many docs out of HelpDB. More examples.
     end
     xu = (xu & ~exponent_mask(T)) | exponent_one(T)
     return reinterpret(T, xu)
@@ -727,7 +631,6 @@ function frexp{T<:IEEEFloat}(x::T)
 end
 
 """
-<<<<<<< HEAD
     rem(x, y, r::RoundingMode)
 
 Compute the remainder of `x` after integer division by `y`, with the quotient rounded
@@ -764,23 +667,15 @@ rem(x::Float16, y::Float16, r::RoundingMode{:Nearest}) = Float16(rem(Float32(x),
 
 
 """
-=======
->>>>>>> Moved so many docs out of HelpDB. More examples.
     modf(x)
 
 Return a tuple (fpart,ipart) of the fractional and integral parts of a number. Both parts
 have the same sign as the argument.
 
-<<<<<<< HEAD
 # Example
 ```jldoctest
 julia> modf(3.5)
 (0.5, 3.0)
-=======
-```jldoctest
-julia> modf(3.5)
-(0.5,3.0)
->>>>>>> Moved so many docs out of HelpDB. More examples.
 ```
 """
 modf(x) = rem(x,one(x)), trunc(x)
@@ -865,7 +760,6 @@ const pi4o2_l  = 2.4492935982947064e-16 # convert(Float64, pi * BigFloat(2) - pi
 Compute the remainder of `x` after integer division by `2π`, with the quotient rounded
 according to the rounding mode `r`. In other words, the quantity
 
-<<<<<<< HEAD
     x - 2π*round(x/(2π),r)
 
 without any intermediate rounding. This internally uses a high precision approximation of
@@ -888,15 +782,6 @@ julia> rem2pi(7pi/4, RoundNearest)
 
 julia> rem2pi(7pi/4, RoundDown)
 5.497787143782138
-=======
-This function computes a floating point representation of the modulus after division by
-numerically exact `2π`, and is therefore not exactly the same as `mod(x,2π)`, which would
-compute the modulus of `x` relative to division by the floating-point number `2π`.
-
-```jldoctest
-julia> mod2pi(9*pi/4)
-0.7853981633974481
->>>>>>> Moved so many docs out of HelpDB. More examples.
 ```
 """
 function rem2pi end
@@ -1040,7 +925,6 @@ mod2pi(x) = rem2pi(x,RoundDown)
 
 Combined multiply-add, computes `x*y+z` in an efficient manner. This may on some systems be
 equivalent to `x*y+z`, or to `fma(x,y,z)`. `muladd` is used to improve performance.
-<<<<<<< HEAD
 See [`fma`](@ref).
 
 # Example
@@ -1051,9 +935,6 @@ julia> muladd(3, 2, 1)
 julia> 3 * 2 + 1
 7
 ```
-=======
-See [`fma`](:func:`fma`).
->>>>>>> Moved so many docs out of HelpDB. More examples.
 """
 muladd(x,y,z) = x*y+z
 
