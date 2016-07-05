@@ -1245,23 +1245,11 @@ end
 
 ## end of FloatRange
 
-<<<<<<< HEAD
 @noinline zero_arg_matrix_constructor(prefix::String) =
     depwarn("$prefix() is deprecated, use $prefix(0, 0) instead.", :zero_arg_matrix_constructor)
 function (::Type{Matrix{T}}){T}()
     zero_arg_matrix_constructor("Matrix{T}")
     return Matrix{T}(0, 0)
-=======
-# Point users to SuiteSparse
-function ereach{Tv,Ti}(A::SparseMatrixCSC{Tv,Ti}, k::Integer, parent::Vector{Ti})
-    error(string("ereach(A, k, parent) now lives in package SuiteSparse.jl. Run",
-        "Pkg.add(\"SuiteSparse\") to install SuiteSparse on Julia v0.5."))
-end
-export etree
-function etree{Tv,Ti}(A::SparseMatrixCSC{Tv,Ti}, postorder::Bool)
-    error(string("etree(A[, post]) now lives in package SuiteSparse.jl. Run",
-        "Pkg.add(\"SuiteSparse\") to install SuiteSparse on Julia v0.5."))
->>>>>>> some doc and deprecation fixes
 end
 function (::Type{Matrix})()
     zero_arg_matrix_constructor("Matrix")
@@ -1307,7 +1295,7 @@ end
             "`sort!(filter!(el -> isa(el, Dates.Period), Dates.parse_components(x, df), rev=true, lt=Dates.periodisless)` ",
             " instead."), :parse)
         sort!(filter!(el -> isa(el, Period), parse_components(x, df)), rev=true, lt=periodisless)
-     end
+    end
 end
 
 # END 0.6 deprecations
