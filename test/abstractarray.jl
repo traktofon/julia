@@ -696,6 +696,10 @@ end
     @test map(()->1234) === 1234
 end
 
+# mapping over scalars and empty arguments:
+@test map(sin, 1) == sin(1)
+@test map(()->1234) == 1234
+
 function test_UInt_indexing(::Type{TestAbstractArray})
     A = [1:100...]
     _A = Expr(:quote, A)
