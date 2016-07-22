@@ -81,6 +81,7 @@ srand(1)
     @testset for isupper in (true, false)
         T = Bidiagonal(dv, ev, isupper)
 
+<<<<<<< HEAD
         @testset "Constructor and basic properties" begin
             @test size(T, 1) == size(T, 2) == n
             @test size(T) == (n, n)
@@ -91,6 +92,16 @@ srand(1)
             @test Array(real(T)) == real(diagm(dv)) + real(diagm(ev, isupper?1:-1))
             @test Array(imag(T)) == imag(diagm(dv)) + imag(diagm(ev, isupper?1:-1))
         end
+=======
+        @test size(T, 1) == size(T, 2) == n
+        @test size(T) == (n, n)
+        @test full(T) == diagm(dv) + diagm(ev, isupper?1:-1)
+        @test Bidiagonal(full(T), isupper) == T
+        @test big(T) == T
+        @test full(abs(T)) == abs(diagm(dv)) + abs(diagm(ev, isupper?1:-1))
+        @test full(real(T)) == real(diagm(dv)) + real(diagm(ev, isupper?1:-1))
+        @test full(imag(T)) == imag(diagm(dv)) + imag(diagm(ev, isupper?1:-1))
+>>>>>>> Revert "Towards #12251 part 2, replace all full(X) calls with convert(Array, X) and migrate tests" (#17564)
         z = zeros(elty, n)
 
         @testset for func in (conj, transpose, ctranspose)
@@ -154,6 +165,7 @@ srand(1)
                 @test norm(x-tx,Inf) <= 4*condT*max(eps()*norm(tx,Inf), eps(promty)*norm(x,Inf))
                 @test_throws DimensionMismatch T\b.'
             end
+<<<<<<< HEAD
             @test_throws DimensionMismatch T \ ones(elty,n+1,2)
             @test_throws DimensionMismatch T.' \ ones(elty,n+1,2)
             @test_throws DimensionMismatch T' \ ones(elty,n+1,2)
@@ -183,6 +195,37 @@ srand(1)
                     if relty != BigFloat # not supported by pivoted QR
                         @test T/b' ≈ Tfull/b'
                     end
+=======
+        end
+        Tfull = full(T)
+        condT = cond(map(Complex128,Tfull))
+        promty = typeof((zero(relty)*zero(relty) + zero(relty)*zero(relty))/one(relty))
+        if relty != BigFloat
+            x = T.'\c.'
+            tx = Tfull.' \ c.'
+            elty <: AbstractFloat && @test norm(x-tx,Inf) <= 4*condT*max(eps()*norm(tx,Inf), eps(promty)*norm(x,Inf))
+            @test_throws DimensionMismatch T.'\b.'
+            x = T'\c.'
+            tx = Tfull' \ c.'
+            @test norm(x-tx,Inf) <= 4*condT*max(eps()*norm(tx,Inf), eps(promty)*norm(x,Inf))
+            @test_throws DimensionMismatch T'\b.'
+            x = T\c.'
+            tx = Tfull\c.'
+            @test norm(x-tx,Inf) <= 4*condT*max(eps()*norm(tx,Inf), eps(promty)*norm(x,Inf))
+            @test_throws DimensionMismatch T\b.'
+        end
+        @test_throws DimensionMismatch T \ ones(elty,n+1,2)
+        @test_throws DimensionMismatch T.' \ ones(elty,n+1,2)
+        @test_throws DimensionMismatch T' \ ones(elty,n+1,2)
+        let bb = b, cc = c
+            for atype in ("Array", "SubArray")
+                if atype == "Array"
+                    b = bb
+                    c = cc
+                else
+                    b = view(bb, 1:n)
+                    c = view(cc, 1:n, 1:2)
+>>>>>>> Revert "Towards #12251 part 2, replace all full(X) calls with convert(Array, X) and migrate tests" (#17564)
                 end
             end
         end
