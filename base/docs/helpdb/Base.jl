@@ -941,6 +941,7 @@ Returns the last index of the collection.
 julia> endof([1,2,4])
 3
 ```
+
 """
 endof
 
