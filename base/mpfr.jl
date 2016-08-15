@@ -703,6 +703,11 @@ cmp(x::CdoubleMax, y::BigFloat) = -cmp(y,x)
 
 signbit(x::BigFloat) = ccall((:mpfr_signbit, :libmpfr), Int32, (Ptr{BigFloat},), &x) != 0
 
+"""
+    precision(BigFloat)
+
+Get the precision (in bits) currently used for `BigFloat` arithmetic.
+"""
 function precision(x::BigFloat)  # precision of an object of type BigFloat
     return ccall((:mpfr_get_prec, :libmpfr), Clong, (Ptr{BigFloat},), &x)
 end

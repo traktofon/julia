@@ -679,7 +679,6 @@ function _prepend!(a, ::IteratorSize, iter)
     a
 end
 
-
 """
     resize!(a::Vector, n::Integer) -> Vector
 
