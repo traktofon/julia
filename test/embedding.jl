@@ -1,8 +1,12 @@
 # test that the embedding example runs without error
 let
-    embedding_bin = joinpath(JULIA_HOME,"..","libexec","embedding")
+    if is_windows()
+        embedding_bin = joinpath(JULIA_HOME,"embedding.exe")
+    else
+        embedding_bin = joinpath(JULIA_HOME,"..","libexec","embedding")
+    end
     lines = readlines(pipeline(`$(embedding_bin)`,
                                stderr=DevNull))
-    @test length(lines) == 5
+    @test length(lines) == (is_windows() ? 6 : 5)
     @test parse(Float64, lines[1]) ≈ sqrt(2)
 end

@@ -23,6 +23,8 @@ function libDir()
     end
 end
 
+private_libDir() = joinpath(libDir(), "julia")
+
 function includeDir()
     joinpath(match(r"(.*)(bin)",JULIA_HOME).captures[1],"include","julia")
 end
@@ -49,7 +51,11 @@ function initDir()
 end
 
 function ldflags()
-    replace("""-L$(libDir())""","\\","\\\\")
+    fl = replace("""-L$(libDir())""","\\","\\\\")
+    if is_windows()
+        fl = fl * " -Wl,--stack,8388608"
+    end
+    return fl
 end
 
 function ldlibs()
@@ -59,7 +65,7 @@ function ldlibs()
         "julia"
     end
     if is_unix()
-        return replace("""-Wl,-rpath,$(libDir()) -l$libname""","\\","\\\\")
+        return replace("""-Wl,-rpath,$(libDir()) -Wl,-rpath,$(private_libDir()) -l$libname""","\\","\\\\")
     else
         return "-l$libname -lopenlibm"
     end
