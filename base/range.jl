@@ -751,6 +751,10 @@ promote_rule{T1,UR<:AbstractUnitRange}(::Type{UnitRange{T1}}, ::Type{UR}) =
 convert{T<:Real}(::Type{UnitRange{T}}, r::AbstractUnitRange) = UnitRange{T}(first(r), last(r))
 convert(::Type{UnitRange}, r::AbstractUnitRange) = UnitRange(first(r), last(r))
 
+convert{T}(::Type{AbstractUnitRange{T}}, r::AbstractUnitRange{T}) = r
+convert{T}(::Type{AbstractUnitRange{T}}, r::UnitRange) = convert(UnitRange{T}, r)
+convert{T}(::Type{AbstractUnitRange{T}}, r::OneTo) = convert(OneTo{T}, r)
+
 promote_rule{T1a,T1b,T2a,T2b}(::Type{StepRange{T1a,T1b}},::Type{StepRange{T2a,T2b}}) =
     StepRange{promote_type(T1a,T2a),promote_type(T1b,T2b)}
 convert{T1,T2}(::Type{StepRange{T1,T2}}, r::StepRange{T1,T2}) = r
