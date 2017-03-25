@@ -410,6 +410,7 @@ to synchronous `File`'s and `IOStream`'s not to any of the asynchronous streams.
 """
 fd
 
+
 """
     ones([A::AbstractArray,] [T=eltype(A)::Type,] [dims=size(A)::Tuple])
 
@@ -941,7 +942,6 @@ Returns the last index of the collection.
 julia> endof([1,2,4])
 3
 ```
-
 """
 endof
 

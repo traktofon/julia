@@ -505,6 +505,7 @@ minmax{T<:AbstractFloat}(x::T, y::T) =
     ifelse(isnan(x) | isnan(y), ifelse(isnan(x), (x,x), (y,y)),
            ifelse((y > x) | (signbit(x) > signbit(y)), (x,y), (y,x)))
 
+
 """
     ldexp(x, n)
 

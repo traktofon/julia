@@ -123,6 +123,7 @@ end
 gcdx(a::Integer, b::Integer) = gcdx(promote(a,b)...)
 
 # multiplicative inverse of n mod m, error if none
+
 """
     invmod(x,m)
 

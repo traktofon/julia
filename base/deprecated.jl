@@ -1295,7 +1295,7 @@ end
             "`sort!(filter!(el -> isa(el, Dates.Period), Dates.parse_components(x, df), rev=true, lt=Dates.periodisless)` ",
             " instead."), :parse)
         sort!(filter!(el -> isa(el, Period), parse_components(x, df)), rev=true, lt=periodisless)
-    end
+     end
 end
 
 # END 0.6 deprecations
