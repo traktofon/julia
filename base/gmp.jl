@@ -473,8 +473,10 @@ end
 powermod(x::Integer, p::Integer, m::BigInt) = powermod(big(x), big(p), m)
 
 function gcdx(a::BigInt, b::BigInt)
-    if b == 0 # shortcut this to ensure consistent results with gcdx(a,b)
-        return a < 0 ? (-a,-ONE,ZERO) : (a,ONE,ZERO)
+    if iszero(b) # shortcut this to ensure consistent results with gcdx(a,b)
+        return a < 0 ? (-a,-ONE,b) : (a,one(BigInt),b)
+        # we don't return the globals ONE and ZERO in case the user wants to
+        # mutate the result
     end
     g = BigInt()
     s = BigInt()
