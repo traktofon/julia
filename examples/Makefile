@@ -3,11 +3,7 @@ BUILDDIR := .
 JULIAHOME := $(abspath $(SRCDIR)/..)
 include $(JULIAHOME)/Make.inc
 
-ifeq ($(BUILD_OS), WINNT)
-outdir := $(bindir)
-else
 outdir := $(libexecdir)
-endif
 
 embedding_binary := $(abspath $(outdir)/embedding$(JULIA_LIBSUFFIX)$(EXE))
 

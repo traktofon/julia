@@ -206,4 +206,4 @@ cat Make.user
 make -j3 VERBOSE=1
 make build-stats
 #make debug
-make prefix=/c/projects/julia/usr VERBOSE=1 -C examples
+make VERBOSE=1 -C examples
